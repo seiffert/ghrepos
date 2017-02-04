@@ -1,6 +1,7 @@
 # ghrepos
 
 [![Build Status](https://travis-ci.org/seiffert/ghrepos.svg?branch=master)](https://travis-ci.org/seiffert/ghrepos)
+[![Go Report Card](https://goreportcard.com/badge/github.com/seiffert/ghrepos)](https://goreportcard.com/report/github.com/seiffert/ghrepos)
 
 **ghrepos** is a simple CLI tool that allows you to find GitHub repositories with a specific
 [topic](https://help.github.com/articles/about-topics/). This is particularly useful when you automate the 
