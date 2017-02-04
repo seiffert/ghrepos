@@ -1,5 +1,7 @@
 # ghrepos
 
+[![Build Status](https://travis-ci.org/seiffert/ghrepos.svg?branch=master)](https://travis-ci.org/seiffert/ghrepos)
+
 **ghrepos** is a simple CLI tool that allows you to find GitHub repositories with a specific
 [topic](https://help.github.com/articles/about-topics/). This is particularly useful when you automate the 
 configuration of build tools or the management of your GitHub repositories.
