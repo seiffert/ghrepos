@@ -13,11 +13,13 @@ seiffert/example-repo-2
 seiffert/example-repo-3
 ```
 
-To authenticate against the GitHub API, **ghrepos** requires a GitHub access token. Generate one in your account 
-settings and pass it either as environment variable `GITHUB_TOKEN` or via the `--token` option:
+To authenticate against the GitHub API, **ghrepos** optionally takes a GitHub access token. This is required if you want
+to list private repositories.
+Generate a token one in [your account settings](https://github.com/settings/tokens) and pass it either as environment 
+variable `GITHUB_TOKEN` or via the `--token` option:
 
 ```bash
-$ ghrepos --owner seiffert --token <GITHUB_TOKEN example-topic
+$ ghrepos --owner seiffert --token <GITHUB_TOKEN> example-topic
 ```
 
 ## Installation
