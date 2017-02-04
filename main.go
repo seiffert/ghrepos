@@ -7,7 +7,11 @@ import (
 
 func main() {
 	if err := ghreposCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
+		abort(err)
 	}
+}
+
+func abort(err error) {
+	fmt.Println(err)
+	os.Exit(-1)
 }

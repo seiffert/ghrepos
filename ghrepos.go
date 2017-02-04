@@ -24,12 +24,12 @@ var (
 
 func init() {
 	ghreposCmd.PersistentFlags().String("token", "", "GitHub token to use for API authentication")
-	viper.BindPFlag("token", ghreposCmd.PersistentFlags().Lookup("token"))
-	viper.BindEnv("token", "GITHUB_TOKEN")
+	must(viper.BindPFlag("token", ghreposCmd.PersistentFlags().Lookup("token")))
+	must(viper.BindEnv("token", "GITHUB_TOKEN"))
 
 	ghreposCmd.PersistentFlags().StringP("owner", "o", "", "User or organization filter")
-	viper.BindPFlag("owner", ghreposCmd.PersistentFlags().Lookup("owner"))
-	viper.BindEnv("owner", "GITHUB_USER")
+	must(viper.BindPFlag("owner", ghreposCmd.PersistentFlags().Lookup("owner")))
+	must(viper.BindEnv("owner", "GITHUB_USER"))
 }
 
 func run(cmd *cobra.Command, args []string) error {
@@ -72,6 +72,12 @@ func run(cmd *cobra.Command, args []string) error {
 		fmt.Printf("%s/%s\n", *repo.Owner.Login, *repo.Name)
 	}
 	return nil
+}
+
+func must(err error) {
+	if err != nil {
+		abort(err)
+	}
 }
 
 type byName []github.Repository
