@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -ex
+set -o pipefail
+
+go get -u github.com/alecthomas/gometalinter
+
+gometalinter --install --force
+
+gometalinter --disable-all \
+    --enable=deadcode \
+    --enable=errcheck \
+    --enable=gocyclo \
+    --enable=golint \
+    --enable=ineffassign \
+    --enable=unused \
+    --enable=vet \
+    --enable=vetshadow
