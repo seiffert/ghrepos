@@ -5,13 +5,12 @@ go:
   - 1.7.x
   - master
 
-before_install:
-  - go get github.com/mitchellh/gox
-  - go get github.com/tcnksm/ghr
-
 script:
   - ./scripts/lint
-  - gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}" -osarch "linux/amd64 linux/386 darwin/amd64 darwin/386"
+  - ./scripts/build
+
+after_success:
+  - go get github.com/tcnksm/ghr
 
 deploy:
   - provider: script
