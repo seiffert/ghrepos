@@ -12,9 +12,17 @@ before_install:
 script:
   - gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}" -osarch "linux/amd64 linux/386 darwin/amd64 darwin/386"
 
-after_success:
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then ghr --username seiffert --token $GITHUB_TOKEN --replace --prerelease --debug pre-release dist/; fi
-  - if [ -n "$TRAVIS_TAG" ]; then ghr --username seiffert --token $GITHUB_TOKEN --replace --debug $TRAVIS_TAG dist/; fi
+deploy:
+  - provider: script
+    script: ghr --username seiffert --token $GITHUB_TOKEN --replace --debug $TRAVIS_TAG dist/
+    on: 
+      go: 1.x
+      tags: true
+  - provider: script
+    script: ghr --username seiffert --token $GITHUB_TOKEN --replace --prerelease --debug pre-release dist/
+    on: 
+      condition: $TRAVIS_GO_VERSION =~ ^1\.7\.[0-9]+$
+      branch: master
 
 env:
   global:
