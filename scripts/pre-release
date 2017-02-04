@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -ex
+set -o pipefail
+
+if test -n $GITHUB_TOKEN; then
+    echo >&2 "error: please pass a \$GITHUB_TOKEN"
+    exit 1
+fi
+
+go get github.com/tcnksm/ghr
+
+ghr --username seiffert --token $GITHUB_TOKEN --delete --debug --prerelease pre-release dist/
