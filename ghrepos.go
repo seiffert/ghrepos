@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"sort"
 	"strings"
 
@@ -32,11 +33,14 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) error {
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: viper.GetString("token")},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-	c := github.NewClient(tc)
+	var httpClient *http.Client
+	if token := viper.GetString("token"); token != "" {
+		ts := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: viper.GetString("token")},
+		)
+		httpClient = oauth2.NewClient(oauth2.NoContext, ts)
+	}
+	c := github.NewClient(httpClient)
 
 	if len(args) < 1 {
 		return errors.New("You need to provide a topic")
