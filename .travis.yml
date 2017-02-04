@@ -15,11 +15,13 @@ script:
 deploy:
   - provider: script
     script: ghr --username seiffert --token $GITHUB_TOKEN --replace --debug $TRAVIS_TAG dist/
+    skip_cleanup: true
     on: 
       go: 1.x
       tags: true
   - provider: script
     script: ghr --username seiffert --token $GITHUB_TOKEN --replace --prerelease --debug pre-release dist/
+    skip_cleanup: true
     on: 
       condition: $TRAVIS_GO_VERSION =~ ^1\.7\.[0-9]+$
       branch: master
