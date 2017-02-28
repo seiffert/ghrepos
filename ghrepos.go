@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 
@@ -30,6 +33,9 @@ func init() {
 	ghreposCmd.PersistentFlags().StringP("owner", "o", "", "User or organization filter")
 	must(viper.BindPFlag("owner", ghreposCmd.PersistentFlags().Lookup("owner")))
 	must(viper.BindEnv("owner", "GITHUB_USER"))
+
+	ghreposCmd.PersistentFlags().Bool("json", false, "Print JSON array instead of human readable list")
+	must(viper.BindPFlag("json", ghreposCmd.PersistentFlags().Lookup("json")))
 }
 
 func run(cmd *cobra.Command, args []string) error {
@@ -55,7 +61,7 @@ func run(cmd *cobra.Command, args []string) error {
 	var result []github.Repository
 	opt := &github.SearchOptions{}
 	for {
-		repos, resp, err := c.Search.Repositories(strings.Join(query, " "), opt)
+		repos, resp, err := c.Search.Repositories(context.Background(), strings.Join(query, " "), opt)
 		if err != nil {
 			return fmt.Errorf("Could not perform search: %s", err)
 		}
@@ -68,9 +74,18 @@ func run(cmd *cobra.Command, args []string) error {
 
 	sort.Sort(byName(result))
 
+	output := []string{}
 	for _, repo := range result {
-		fmt.Printf("%s/%s\n", *repo.Owner.Login, *repo.Name)
+		output = append(output, fmt.Sprintf("%s/%s", *repo.Owner.Login, *repo.Name))
 	}
+
+	switch {
+	case viper.GetBool("json"):
+		return json.NewEncoder(os.Stdout).Encode(output)
+	default:
+		fmt.Println(strings.Join(output, "\n"))
+	}
+
 	return nil
 }
 
