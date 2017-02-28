@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -55,7 +56,7 @@ func run(cmd *cobra.Command, args []string) error {
 	var result []github.Repository
 	opt := &github.SearchOptions{}
 	for {
-		repos, resp, err := c.Search.Repositories(strings.Join(query, " "), opt)
+		repos, resp, err := c.Search.Repositories(context.Background(), strings.Join(query, " "), opt)
 		if err != nil {
 			return fmt.Errorf("Could not perform search: %s", err)
 		}
