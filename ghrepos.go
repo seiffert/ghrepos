@@ -51,9 +51,13 @@ func run(cmd *cobra.Command, args []string) error {
 	if len(args) < 1 {
 		return errors.New("You need to provide a topic")
 	}
-	topic := args[0]
 
-	query := []string{fmt.Sprintf("topic:%s", topic)}
+	query := []string{}
+
+	for _, topic := range args {
+		query = append(query, fmt.Sprintf("topic:%s", topic))
+	}
+
 	if owner := viper.GetString("owner"); owner != "" {
 		query = append(query, fmt.Sprintf("user:%s", owner))
 	}
