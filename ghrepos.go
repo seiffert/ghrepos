@@ -52,34 +52,13 @@ func run(cmd *cobra.Command, args []string) error {
 		return errors.New("You need to provide a topic")
 	}
 
-	query := []string{}
-
-	for _, topic := range args {
-		query = append(query, fmt.Sprintf("topic:%s", topic))
+	repos, err := fetchRepositories(c, viper.GetString("owner"), args)
+	if err != nil {
+		return err
 	}
-
-	if owner := viper.GetString("owner"); owner != "" {
-		query = append(query, fmt.Sprintf("user:%s", owner))
-	}
-
-	var result []github.Repository
-	opt := &github.SearchOptions{}
-	for {
-		repos, resp, err := c.Search.Repositories(context.Background(), strings.Join(query, " "), opt)
-		if err != nil {
-			return fmt.Errorf("Could not perform search: %s", err)
-		}
-		result = append(result, repos.Repositories...)
-		if resp.NextPage == 0 {
-			break
-		}
-		opt.ListOptions.Page = resp.NextPage
-	}
-
-	sort.Sort(byName(result))
 
 	output := []string{}
-	for _, repo := range result {
+	for _, repo := range repos {
 		output = append(output, fmt.Sprintf("%s/%s", *repo.Owner.Login, *repo.Name))
 	}
 
@@ -91,6 +70,36 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func fetchRepositories(c *github.Client, owner string, topics []string) ([]github.Repository, error) {
+	query := []string{}
+
+	for _, topic := range topics {
+		query = append(query, fmt.Sprintf("topic:%s", topic))
+	}
+
+	if owner != "" {
+		query = append(query, fmt.Sprintf("user:%s", owner))
+	}
+
+	var result []github.Repository
+	opt := &github.SearchOptions{}
+	for {
+		repos, resp, err := c.Search.Repositories(context.Background(), strings.Join(query, " "), opt)
+		if err != nil {
+			return nil, fmt.Errorf("Could not perform search: %s", err)
+		}
+		result = append(result, repos.Repositories...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.ListOptions.Page = resp.NextPage
+	}
+
+	sort.Sort(byName(result))
+
+	return result, nil
 }
 
 func must(err error) {
