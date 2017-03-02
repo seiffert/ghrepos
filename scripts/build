@@ -5,6 +5,7 @@ set -o pipefail
 
 go get -u github.com/mitchellh/gox
 
+export CGO_ENABLED=0
 gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}" -osarch "linux/amd64 linux/386 darwin/amd64 darwin/386"
 
 cd dist && shasum -a 256 * > sha256sums
